@@ -1,9 +1,11 @@
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser/';
+import { CoreModule } from './core/core.module';
 import { NgModule } from '@angular/core';
 import * as Hammer from 'hammerjs';
 
-import { AppRoutingModule } from './app-routing.module';
+import { environment } from '../environments/environment';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 
