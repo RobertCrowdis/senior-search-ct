@@ -18,7 +18,8 @@ import { FixedPipe } from './pipes/fixed.pipe';
   ],
   exports: [
     DistancePipe,
-    FixedPipe
+    FixedPipe,
+    ...MATERIAL
   ]
 })
 export class SharedModule { }
