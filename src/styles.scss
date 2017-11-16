@@ -15,6 +15,7 @@ $theme: mat-light-theme($primary, $accent, $warn);
 $text: #212121;
 $background: rgb(214, 214, 214);
 $white: #FFFFFF;
+$fontsize: 20px;
 
 * {
     word-wrap: break-word;
@@ -24,9 +25,37 @@ body {
     font-family: 'Roboto', sans-serif;
     background: $background;
     color: $text;
-    font-size: 20px;
   }
 
-  h1, h2, h3, h4, h5, h6, label, p {
+  h1, h2, h3, h4, h5, h6, label,{
     color: $text !important;
+  }
+
+  p {
+    font-size: $fontsize;
+  }
+
+  .slowfade {
+    animation-duration: 2.5s;
+    animation-fill-mode: fowards;
+    animation-name: fadeIn;
+    opacity: 1;
+    transition: transform 2.5s ease;
+  }
+
+  .fastfade {
+    animation-duration: 2.5s;
+    animation-fill-mode: fowards;
+    animation-name: fadeIn;
+    opacity: 1;
+    transition: transform 2.5s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
