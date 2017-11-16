@@ -23,6 +23,7 @@ export class CentersService {
   };
   private _events: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   private _sneakers: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  private _yelpToken: string;
 
   /**
     * @param _fbDB Firebase Database instance.
@@ -30,6 +31,15 @@ export class CentersService {
     */
   constructor(private _fbDB: AngularFireDatabase, private _http: HttpClient) {
     this._active.next(this._default);
+    this._fbDB.object('yelp').valueChanges().subscribe((result: any) => {
+      const valid = new Date().getTime() - 86400000;
+      if (!result && valid >= result.expires) {
+        this._http.get(environment.api + 'yelp');
+      } else {
+        this._yelpToken = result.token;
+        console.log(this._yelpToken);
+      }
+    });
   }
 
   /**

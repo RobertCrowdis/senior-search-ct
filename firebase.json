@@ -3,12 +3,30 @@
     "rules": "database.rules.json"
   },
   "hosting": {
-    "public": "dist",
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
+    "public": "./",
+    "ignore": [
+      "e2e/**",
+      "functions/**",
+      "node_modules/**",
+      "src/**",
+      ".angular-cli.json",
+      ".editorconfig",
+      "database.rules.json",
+      "firebase.json",
+      "karma.conf.js",
+      "package-lock.json",
+      "package.json",
+      "protractor.conf.json",
+      "README.md",
+      "tsconfig.json",
+      "tslint.json"
+    ],
+    "rewrites": [{
+      "source": "docs/**",
+      "destination": "/docs/index.html"
+    }, {
+      "source": "**",
+      "destination": "/dist/index.html"
+    }]
   }
 }
