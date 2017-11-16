@@ -1,0 +1,18 @@
+{
+  "dynamic": {
+    "group": [{
+      "name": "firebase",
+      "urls": {
+        "https://senior-search-ct.firebaseapp.com/": {
+          "match": "prefix"
+        }
+      },
+      "cache": {
+        "optimizeFor": "performance",
+        "maxAgeMs": 3600000,
+        "maxEntries": 100,
+        "strategy": "lru"
+      }
+    }]
+  }
+}
