@@ -79,7 +79,7 @@ export class ModalComponent implements OnInit {
     if (data.venue) {
       this._modalData.coordinates = {
         lat: data.venue.lat,
-        lng: data.venue.lng
+        lng: data.venue.lon
       };
     }
   }
@@ -99,8 +99,8 @@ export class ModalComponent implements OnInit {
     };
     if (data.coordinates.latitude && data.coordinates.longitude) {
       this._modalData.coordinates = {
-        lat: data.latitude,
-        lng: data.longitude
+        lat: data.coordinates.latitude,
+        lng: data.coordinates.longitude
       };
     }
   }
