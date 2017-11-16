@@ -46,7 +46,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       const facility = params['facility'];
       if (facility) {
         this._facility = this._cs.findOne(decodeURI(facility));
-        this._facility.first().subscribe(result => console.log(result));
       } else {
         this._facility = null;
       }

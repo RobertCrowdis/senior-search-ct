@@ -37,9 +37,10 @@
         <mat-card-title>{{(facility | async)?.agency}}</mat-card-title>
       </mat-card-header>
       <mat-card-content class="full-width-map">
-        <agm-map [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [zoom]="13" [zoomControl]="false"
-          [streetViewControl]="false" [usePanning]="true" [fullscreenControl]="false" [gestureHandling]="'greedy'">
-          <agm-marker [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [iconUrl]="(facility | async)?.icon || null"></agm-marker>
+        <agm-map [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [zoom]="13" [scrollwheel]="false"
+          [draggable]="false" [scrollwheel]="false" [gestureHandling]="'none'" [zoomControl]="false" [disableDoubleClickZoom]="true"
+          [streetViewControl]="false" [usePanning]="true" [fullscreenControl]="false">
+          <agm-marker [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng"></agm-marker>
         </agm-map>
       </mat-card-content>
       <mat-card-actions>
