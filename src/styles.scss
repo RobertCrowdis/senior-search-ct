@@ -6,8 +6,8 @@
 @import '~@angular/material/theming';
 @include mat-core();
 
-$primary: mat-palette($mat-deep-orange, 700, 100, 900);
-$accent: mat-palette($mat-deep-purple, A200, A100, A400);
+$primary: mat-palette($mat-indigo, 700, 100, 900);
+$accent: mat-palette($mat-blue-grey, A200, A100, A400);
 $warn: mat-palette($mat-red);
 $theme: mat-light-theme($primary, $accent, $warn);
 @include angular-material-theme($theme);
@@ -44,11 +44,11 @@ body {
   }
 
   .fastfade {
-    animation-duration: 2.5s;
+    animation-duration: .75s;
     animation-fill-mode: fowards;
     animation-name: fadeIn;
     opacity: 1;
-    transition: transform 2.5s ease;
+    transition: transform .75s ease;
   }
 
   @keyframes fadeIn {
