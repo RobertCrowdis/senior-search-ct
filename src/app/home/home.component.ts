@@ -119,6 +119,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Get function for restaurants from Yelp.
+   * @returns Restaurants from Yelp.
+   */
+  get yelp(): Observable<any[]> {
+    return this._cs.yelp;
+  }
+
+  /**
    * Takes a string and encodes it as a valid URI.
    * @param uri String to encode.
    * @returns Encoded string.

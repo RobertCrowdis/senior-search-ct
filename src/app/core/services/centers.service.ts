@@ -23,7 +23,7 @@ export class CentersService {
   };
   private _events: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   private _sneakers: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  private _yelpToken: string;
+  private _yelp: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
   /**
     * @param _fbDB Firebase Database instance.
@@ -31,15 +31,6 @@ export class CentersService {
     */
   constructor(private _fbDB: AngularFireDatabase, private _http: HttpClient) {
     this._active.next(this._default);
-    this._fbDB.object('yelp').valueChanges().subscribe((result: any) => {
-      const valid = new Date().getTime() - 86400000;
-      if (!result && valid >= result.expires) {
-        this._http.get(environment.api + 'yelp');
-      } else {
-        this._yelpToken = result.token;
-        console.log(this._yelpToken);
-      }
-    });
   }
 
   /**
@@ -75,13 +66,20 @@ export class CentersService {
   }
 
   /**
+   * Getter for nearby restaurants on Yelp.
+   * @returns Restaurants on Yelp nearby.
+   */
+  get yelp(): Observable<any[]> {
+    return this._yelp.asObservable();
+  }
+
+  /**
    * Queries all senior centers in the state.
    * @returns Observable array of senior centers.
    */
   public findAll(): Observable<any[]> {
     return this._fbDB.list('centers').snapshotChanges().map((changes: any) => {
-      return changes.map((c) => ({ $key: c.payload.key, ...c.payload.val() }))
-        .filter(c => (c.agency && c.address.city));
+      return changes.map((c) => ({ $key: c.payload.key, ...c.payload.val() })).filter(c => (c.agency && c.address.city));
     });
   }
 
@@ -98,6 +96,7 @@ export class CentersService {
       const place = { $key: changes[0].payload.key, ...changes[0].payload.val() };
       this._fetchEvents(place.coordinates);
       this._fetchSneakers(place.coordinates);
+      this._fetchYelp(place.coordinates);
       (place.place_id) ? this._fetchAbout(place.place_id) : this._about.next({});
       this._active.next(place);
       return place;
@@ -110,9 +109,7 @@ export class CentersService {
    */
   private _fetchAbout(placeid: string): void {
     const url = environment.api + 'about?placeid=' + placeid;
-    this._http.get(url).first().subscribe((response: any) => {
-      this._about.next(response.result);
-    });
+    this._http.get(url).first().subscribe((response: any) => this._about.next(response.result));
   }
 
   /**
@@ -123,9 +120,7 @@ export class CentersService {
     const url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&limited_events=False' +
       '&photo-host=public&page=20&radius=5.0&desc=False&status=upcoming&sig_id=177136722&sig=e416ba5c105b2aabf6723172c214629d863b0e93' +
       '&topic=wellness,outdoors,parents,social&lat=' + coordinates.lat + '&lon=' + coordinates.lng;
-    this._http.jsonp(url, 'callback').first().subscribe((response: any) => {
-      this._events.next(response.results);
-    });
+    this._http.jsonp(url, 'callback').first().subscribe((response: any) => this._events.next(response.results));
   }
 
   /**
@@ -136,8 +131,15 @@ export class CentersService {
     const url = 'https://locationsearch.tivityhealth.com/api/GeneralLocationsClassesByGeoPoint?' +
       'ProductCode=101&APIKey=54654D75-3AEB-4C5A-80CC-53DA5F71EA18&CallerSystemName=SilverSneakersWebsite&' +
       'MileRadius=5&Latitude=' + coordinates.lat + '&Longitude=' + coordinates.lng;
-    this._http.get(url).first().subscribe((response: any) => {
-      this._sneakers.next(response.locations);
-    });
+    this._http.get(url).first().subscribe((response: any) => this._sneakers.next(response.locations));
+  }
+
+  /**
+   * Updates restaurants from near a location from Yelp.
+   * @param coordinates LatLngLiteral of place to find Yelp restaurants near.
+   */
+  private _fetchYelp(coordinates: LatLngLiteral): void {
+    const url = environment.api + 'yelp?lat=' + coordinates.lat + '&lng=' + coordinates.lng;
+    this._http.get(url).first().subscribe((response: any) => this._yelp.next(response.result));
   }
 }

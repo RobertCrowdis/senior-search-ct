@@ -147,40 +147,100 @@ exports.about = functions.https.onRequest((request, response) => {
 });
 
 /**
- * Updates Yelp Bearer Token
+ * Updates Yelp Bearer Token or fetches restaurants.
  * @param {any} request - HTTP request data.
  * @param {any} response - Function to send response to client.
  */
 exports.yelp = functions.https.onRequest((request, response) => {
-  const yelp = admin.database().ref('/yelp');
-  cors(request, response, () => {
-    httpRequest({
-      method: 'POST',
-      url: 'https://api.yelp.com/oauth2/token',
-      qs: {
-        grant_type: 'client_credentials',
-        client_id: functions.config().yelp.client_id,
-        client_secret: functions.config().yelp.client_secret
-      },
-    }, (err, res, body) => {
-      if (err) {
-        throw new Error(err);
-      }
-      try {
-        body = JSON.parse(body);
-        if (body.error) {
-          throw new Error(body.error.code);
+  if (request.query.lat === undefined || request.query.lng === undefined) {
+    response.status(400).send('No coordinates defined!');
+  } else {
+    const coordinates = request.query;
+    const yelpRef = admin.database().ref('/yelp');
+    cors(request, response, () => {
+      yelpRef.on('value', (snapshot) => {
+        const yelp = snapshot.val();
+        if (!yelp && valid >= yelp.expires) {
+          updateYelp(response, coordinates);
+        } else {
+          getRestaurants(response, coordinates, yelp.token);
         }
-        yelp.set({
-          expires: new Date(new Date().getTime() + body.expires_in).getTime(),
-          token: body.access_token
-        })
-        response.send(JSON.stringify({
-          result: 'Access token updated.'
-        }));
-      } catch (e) {
-        throw new Error(e);
-      }
+      });
     });
-  });
+  }
 });
+
+/**
+ * Updates Yelp Bearer Token then fetches restaurants.
+ * @param {any} response - Function to send response to client.
+ * @param {any} coordinates - Coordinates for Yelp query.
+ */
+const updateYelp = (response, coordinates) => {
+  const yelpRef = admin.database().ref('/yelp');
+  httpRequest({
+    method: 'POST',
+    url: 'https://api.yelp.com/oauth2/token',
+    qs: {
+      grant_type: 'client_credentials',
+      client_id: functions.config().yelp.client_id,
+      client_secret: functions.config().yelp.client_secret
+    },
+  }, (err, res, body) => {
+    if (err) {
+      throw new Error(err);
+    }
+    try {
+      body = JSON.parse(body);
+      if (body.error) {
+        throw new Error(body.error.code);
+      }
+      yelp.set({
+        expires: new Date(new Date().getTime() + body.expires_in).getTime(),
+        token: body.access_token
+      })
+      getRestaurants(response, coordinates, body.access_token)
+    } catch (e) {
+      throw new Error(e);
+    }
+  });
+}
+
+/**
+ * Queries restaurants on Yelp.
+ * @param {any} response - Function to send response to client.
+ * @param {any} coordinates - Coordinates for Yelp query.
+ * @param {string} token - Bearer token for Yelp reuqest.
+ */
+const getRestaurants = (response, coordinates, token) => {
+  httpRequest({
+    method: 'GET',
+    url: 'https://api.yelp.com/v3/businesses/search',
+    qs: {
+      categories: 'restaurants',
+      sort_by: 'rating',
+      price: '1,2',
+      attributes: 'deals',
+      radius: '8000',
+      latitude: coordinates.lat,
+      longitude: coordinates.lng
+    },
+    headers: {
+      authorization: 'Bearer ' + token
+    }
+  }, (err, res, body) => {
+    if (err) {
+      throw new Error(err);
+    }
+    try {
+      body = JSON.parse(body);
+      if (body.error) {
+        throw new Error(body.error.code);
+      }
+      response.send(JSON.stringify({
+        result: body.businesses
+      }));
+    } catch (e) {
+      throw new Error(e);
+    }
+  });
+}
