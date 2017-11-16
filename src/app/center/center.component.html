@@ -14,7 +14,7 @@
           [longitude]="(event.venue) ? event.venue.lon : 0" [iconUrl]="'./assets/icons/event.png'"></agm-marker>
         <agm-marker *ngFor="let sneaker of sneakers | async" (markerClick)="openModal('sneaker', sneaker)" [latitude]="sneaker.latitude"
           [longitude]="sneaker.longitude" [iconUrl]="'./assets/icons/sneaker.png'"></agm-marker>
-        <agm-marker *ngFor="let restaurant of yelp | async" (markerClick)="openModal('yelp', restaurant)" [latitude]="restaurant.coordinates.latitude"
+        <agm-marker *ngFor="let restaurant of yelp | async" (markerClick)="openModal('restaurant', restaurant)" [latitude]="restaurant.coordinates.latitude"
           [longitude]="restaurant.coordinates.longitude" [iconUrl]="'./assets/icons/restaurant.png'"></agm-marker>
         <agm-marker [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [iconUrl]="'./assets/icons/seniors.png'"></agm-marker>
       </agm-map>
@@ -71,7 +71,7 @@
           <mat-card-content class="full-width bottom-too">
             <mat-list>
               <ng-template ngFor let-sneaker [ngForOf]="sneakers | async" let-last="last">
-                <mat-list-item (click)="goTo(sneaker.webSiteAddress)">
+                <mat-list-item (click)="openModal('sneaker', sneaker)">
                   <h4 mat-line>{{sneaker.name}}</h4>
                   <p mat-line>{{sneaker.mileDistance | fixed}} miles away in {{sneaker.city}}</p>
                 </mat-list-item>
@@ -95,7 +95,7 @@
           <mat-card-content class="full-width bottom-too">
             <mat-list>
               <ng-template ngFor let-restuarant [ngForOf]="yelp | async" let-last="last">
-                <mat-list-item (click)="goTo(restuarant.url)">
+                <mat-list-item (click)="openModal('restaurant', restuarant)">
                   <h4 mat-line>{{restuarant.name}}</h4>
                   <p mat-line>Average rating of {{restuarant.rating}} stars from {{restuarant.review_count}} reviews</p>
                 </mat-list-item>
@@ -119,7 +119,7 @@
           <mat-card-content class="full-width bottom-too">
             <mat-list>
               <ng-template ngFor let-event [ngForOf]="events | async" let-last="last">
-                <mat-list-item (click)="goTo(event.event_url)">
+                <mat-list-item (click)="openModal('event', event)">
                   <h4 mat-line>{{event.name}}</h4>
                   <p mat-line>{{event.group.name}} | {{event.time | date}}</p>
                 </mat-list-item>

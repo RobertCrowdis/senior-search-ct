@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 
 import { CenterRoutingModule } from './center-routing.module';
 import { CenterComponent } from './center.component';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   imports: [
@@ -12,6 +13,10 @@ import { CenterComponent } from './center.component';
     CenterRoutingModule,
     SharedModule
   ],
-  declarations: [CenterComponent]
+  declarations: [
+    CenterComponent,
+    ModalComponent
+  ],
+  entryComponents: [ModalComponent]
 })
 export class CenterModule { }

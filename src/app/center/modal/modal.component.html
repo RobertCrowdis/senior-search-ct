@@ -1,0 +1,15 @@
+<mat-card *ngIf="data">
+  <mat-card-header>
+    <mat-card-title>{{data.name}}</mat-card-title>
+    <mat-card-subtitle *ngIf="data.date">On {{data.date | date}}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <p>{{data.details}}</p>
+  </mat-card-content>
+  <mat-card-actions>
+    <a *ngIf="data.website" [href]="data.website" target="_blank" mat-button>WEBSITE</a>
+    <a *ngIf="data.phone" [href]="'tel:'+data.phone" mat-button>CALL</a>
+    <a *ngIf="data.coordinates" [href]="'https://www.google.com/maps/dir/'+(coordsUser | async)?.lat+','+(coordsUser | async)?.lng+'/'+data.coordinates.lat+','+data.coordinates.lng"
+      target="_blank" mat-button>DIRECTIONS</a>
+  </mat-card-actions>
+</mat-card>

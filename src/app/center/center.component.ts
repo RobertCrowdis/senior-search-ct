@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { LatLngLiteral } from 'geokit';
 
+import { ModalComponent } from './modal/modal.component';
 import { CentersService, LocationService } from '../core/services';
 
 /**
@@ -22,11 +24,15 @@ export class CenterComponent implements OnInit, OnDestroy {
 
   /**
    * @param _cs CentersService that queries all senior centers in the state.
+   * @param _dialog Service to open Material Design modal dialogs.
    * @param _location Location is a service that applications can use to interact with a browser's URL.
    * @param _ls LocationService to keep track of user's location.
    * @param _route Contains the information about a route associated with a component loaded in an outlet.
    */
-  constructor(private _cs: CentersService, private _location: Location, private _ls: LocationService, private _route: ActivatedRoute) { }
+  constructor(
+    private _cs: CentersService, private _dialog: MatDialog, private _location: Location,
+    private _ls: LocationService, private _route: ActivatedRoute
+  ) { }
 
   /**
    * Lifecycle hook that is called after data-bound properties of a directive are initialized.
@@ -125,11 +131,11 @@ export class CenterComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * @TODO Open modal for information passed in.
+   * Open modal for information passed in.
    * @param type Type of object.
    * @param info Info of object.
    */
   public openModal(type: string, info: any): void {
-    console.log(info);
+    this._dialog.open(ModalComponent, { data: { type: type, info: info } });
   }
 }

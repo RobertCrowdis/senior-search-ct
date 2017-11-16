@@ -120,10 +120,7 @@ export class CentersService {
     const url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&limited_events=False' +
       '&photo-host=public&page=20&radius=5.0&desc=False&status=upcoming&sig_id=177136722&sig=e416ba5c105b2aabf6723172c214629d863b0e93' +
       '&topic=wellness,outdoors,parents,social&lat=' + coordinates.lat + '&lon=' + coordinates.lng;
-    this._http.jsonp(url, 'callback').first().subscribe((response: any) => {
-      this._events.next(response.results);
-      console.log(response.results);
-    });
+    this._http.jsonp(url, 'callback').first().subscribe((response: any) => this._events.next(response.results));
   }
 
   /**
@@ -134,10 +131,7 @@ export class CentersService {
     const url = 'https://locationsearch.tivityhealth.com/api/GeneralLocationsClassesByGeoPoint?' +
       'ProductCode=101&APIKey=54654D75-3AEB-4C5A-80CC-53DA5F71EA18&CallerSystemName=SilverSneakersWebsite&' +
       'MileRadius=5&Latitude=' + coordinates.lat + '&Longitude=' + coordinates.lng;
-    this._http.get(url).first().subscribe((response: any) => {
-      this._sneakers.next(response.locations);
-      console.log(response.locations);
-    });
+    this._http.get(url).first().subscribe((response: any) => this._sneakers.next(response.locations));
   }
 
   /**
@@ -146,9 +140,6 @@ export class CentersService {
    */
   private _fetchYelp(coordinates: LatLngLiteral): void {
     const url = environment.api + 'yelp?lat=' + coordinates.lat + '&lng=' + coordinates.lng;
-    this._http.get(url).first().subscribe((response: any) => {
-      this._yelp.next(response.result);
-      console.log(response.result);
-    });
+    this._http.get(url).first().subscribe((response: any) => this._yelp.next(response.result));
   }
 }
