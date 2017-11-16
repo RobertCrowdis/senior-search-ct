@@ -5,90 +5,37 @@
   <span>{{(facility | async)?.agency}}</span>
 </mat-toolbar>
 
-<section fxLayout="row" fxLayoutAlign="center">
-  <div fxFlex.xs="100" fxFlex.sm="80" fxFlex.lg="60" class="mat-card-padding">
-    <app-search></app-search>
-  </div>
-</section>
+<mat-tab-group>
+  <mat-tab label="Map">
+    <div id="map-tab">
+      <agm-map [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [zoom]="13" [zoomControl]="false"
+        [streetViewControl]="false" [usePanning]="true" [fullscreenControl]="false" [gestureHandling]="'greedy'">
+        <agm-marker *ngFor="let event of events | async" (markerClick)="openModal('event', event)" [latitude]="(event.venue) ? event.venue.lat : 0"
+          [longitude]="(event.venue) ? event.venue.lon : 0" [iconUrl]="'./assets/icons/event.png'"></agm-marker>
+        <agm-marker *ngFor="let sneaker of sneakers | async" (markerClick)="openModal('sneaker', sneaker)" [latitude]="sneaker.latitude"
+          [longitude]="sneaker.longitude" [iconUrl]="'./assets/icons/sneaker.png'"></agm-marker>
+        <agm-marker *ngFor="let restaurant of yelp | async" (markerClick)="openModal('yelp', restaurant)" [latitude]="restaurant.coordinates.latitude"
+          [longitude]="restaurant.coordinates.longitude" [iconUrl]="'./assets/icons/restaurant.png'"></agm-marker>
+        <agm-marker [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [iconUrl]="'./assets/icons/seniors.png'"></agm-marker>
+      </agm-map>
+    </div>
+  </mat-tab>
 
-<section fxLayout="row" fxLayoutAlign="center" fxLayoutWrap class="slowfade">
-  <!-- Map -->
-  <div fxFlex.xs="100" fxFlex.gt-xs="40" fxFlex.gt-md="30" class="mat-card-padding">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>{{(facility | async)?.agency}}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="full-width-map">
-        <agm-map [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [zoom]="13" [scrollwheel]="false"
-          [draggable]="false" [scrollwheel]="false" [gestureHandling]="'none'" [zoomControl]="false" [disableDoubleClickZoom]="true"
-          [streetViewControl]="false" [usePanning]="true" [fullscreenControl]="false">
-          <agm-marker [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng"></agm-marker>
-        </agm-map>
-      </mat-card-content>
-      <mat-card-actions>
-        <a *ngIf="(about | async)?.website" [href]="(about | async)?.website" target="_blank" mat-button>WEBSITE</a>
-        <a *ngIf="(facility | async)?.phone" [href]="'tel:'+(facility | async)?.phone" mat-button>CALL</a>
-        <a *ngIf="(facility | async)?.email" [href]="'mailto:'+(facility | async)?.email" mat-button>EMAIL</a>
-        <a [href]="'https://www.google.com/maps/dir/'+(coordsUser | async)?.lat+','+(coordsUser | async)?.lng+'/'+(facility | async)?.coordinates.lat+','+(facility | async)?.coordinates.lng"
-          target="_blank" mat-button>DIRECTIONS</a>
-      </mat-card-actions>
-    </mat-card>
-  </div>
+  <mat-tab label="About">
+    <section fxLayout="row" fxLayoutAlign="center">
+      <div fxFlex.xs="100" fxFlex.sm="80" fxFlex.lg="60" class="mat-card-padding">
+        <app-search></app-search>
+      </div>
+    </section>
 
-  <!-- Information -->
-  <div fxFlex.xs="100" fxFlex.gt-xs="60" fxFlex.gt-md="70" class="mat-card-padding">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Information</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="full-width">
-        <mat-tab-group class="demo-tab-group">
-          <mat-tab label="Silver Sneakers">
-            <mat-list>
-              <ng-template ngFor let-sneaker [ngForOf]="sneakers | async" let-last="last">
-                <mat-list-item (click)="goTo(sneaker.webSiteAddress)">
-                  <h4 mat-line>{{sneaker.name}}</h4>
-                  <p mat-line>{{sneaker.mileDistance | fixed}} miles away in {{sneaker.city}}</p>
-                </mat-list-item>
-                <mat-divider *ngIf="!last"></mat-divider>
-              </ng-template>
-              <mat-list-item *ngIf="(sneakers | async)?.length === 0">
-                <h4 mat-line>No Silver Sneakers Found</h4>
-                <p mat-line>Try Another Place</p>
-              </mat-list-item>
-            </mat-list>
-          </mat-tab>
-          <mat-tab label="Restuarants">
-            <mat-list>
-              <ng-template ngFor let-restuarant [ngForOf]="yelp | async" let-last="last">
-                <mat-list-item (click)="goTo(restuarant.url)">
-                  <h4 mat-line>{{restuarant.name}}</h4>
-                  <p mat-line>Average rating of {{restuarant.rating}} stars from {{restuarant.review_count}} reviews</p>
-                </mat-list-item>
-                <mat-divider *ngIf="!last"></mat-divider>
-              </ng-template>
-              <mat-list-item *ngIf="(yelp | async)?.length === 0">
-                <h4 mat-line>No Restaurants Found</h4>
-                <p mat-line>Try Another Place</p>
-              </mat-list-item>
-            </mat-list>
-          </mat-tab>
-          <mat-tab label="Events">
-            <mat-list>
-              <ng-template ngFor let-event [ngForOf]="events | async" let-last="last">
-                <mat-list-item (click)="goTo(event.event_url)">
-                  <h4 mat-line>{{event.name}}</h4>
-                  <p mat-line>{{event.group.name}} | {{event.time | date}}</p>
-                </mat-list-item>
-                <mat-divider *ngIf="!last"></mat-divider>
-              </ng-template>
-              <mat-list-item *ngIf="(events | async)?.length === 0">
-                <h4 mat-line>No Upcoming Events Found</h4>
-                <p mat-line>Try Another Place</p>
-              </mat-list-item>
-            </mat-list>
-          </mat-tab>
-          <mat-tab label="Reviews">
+    <section fxLayout="row" fxLayoutAlign="center" fxLayoutWrap class="slowfade">
+      <!-- About -->
+      <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="25" class="mat-card-padding">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>{{(facility | async)?.agency}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="full-width">
             <mat-list>
               <ng-template ngFor let-review [ngForOf]="(about | async)?.reviews" let-last="last">
                 <mat-list-item (click)="goTo(review.author_url)">
@@ -104,9 +51,88 @@
                 <p mat-line>Try Another Place</p>
               </mat-list-item>
             </mat-list>
-          </mat-tab>
-        </mat-tab-group>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</section>
+          </mat-card-content>
+          <mat-card-actions>
+            <a *ngIf="(about | async)?.website" [href]="(about | async)?.website" target="_blank" mat-button>WEBSITE</a>
+            <!-- <a *ngIf="(facility | async)?.phone" [href]="'tel:'+(facility | async)?.phone" mat-button>CALL</a> -->
+            <a *ngIf="(facility | async)?.email" [href]="'mailto:'+(facility | async)?.email" mat-button>EMAIL</a>
+            <a [href]="'https://www.google.com/maps/dir/'+(coordsUser | async)?.lat+','+(coordsUser | async)?.lng+'/'+(facility | async)?.coordinates.lat+','+(facility | async)?.coordinates.lng"
+              target="_blank" mat-button>DIRECTIONS</a>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+
+      <!-- Silver Sneakers -->
+      <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="25" class="mat-card-padding">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Silver Sneakers</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="full-width bottom-too">
+            <mat-list>
+              <ng-template ngFor let-sneaker [ngForOf]="sneakers | async" let-last="last">
+                <mat-list-item (click)="goTo(sneaker.webSiteAddress)">
+                  <h4 mat-line>{{sneaker.name}}</h4>
+                  <p mat-line>{{sneaker.mileDistance | fixed}} miles away in {{sneaker.city}}</p>
+                </mat-list-item>
+                <mat-divider *ngIf="!last"></mat-divider>
+              </ng-template>
+              <mat-list-item *ngIf="(sneakers | async)?.length === 0">
+                <h4 mat-line>No Silver Sneakers Found</h4>
+                <p mat-line>Try Another Place</p>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Restaurants -->
+      <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="25" class="mat-card-padding">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Nearby Restaurants</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="full-width bottom-too">
+            <mat-list>
+              <ng-template ngFor let-restuarant [ngForOf]="yelp | async" let-last="last">
+                <mat-list-item (click)="goTo(restuarant.url)">
+                  <h4 mat-line>{{restuarant.name}}</h4>
+                  <p mat-line>Average rating of {{restuarant.rating}} stars from {{restuarant.review_count}} reviews</p>
+                </mat-list-item>
+                <mat-divider *ngIf="!last"></mat-divider>
+              </ng-template>
+              <mat-list-item *ngIf="(yelp | async)?.length === 0">
+                <h4 mat-line>No Restaurants Found</h4>
+                <p mat-line>Try Another Place</p>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- Events -->
+      <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="25" class="mat-card-padding">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Upcoming Events</mat-card-title>
+          </mat-card-header>
+          <mat-card-content class="full-width bottom-too">
+            <mat-list>
+              <ng-template ngFor let-event [ngForOf]="events | async" let-last="last">
+                <mat-list-item (click)="goTo(event.event_url)">
+                  <h4 mat-line>{{event.name}}</h4>
+                  <p mat-line>{{event.group.name}} | {{event.time | date}}</p>
+                </mat-list-item>
+                <mat-divider *ngIf="!last"></mat-divider>
+              </ng-template>
+              <mat-list-item *ngIf="(events | async)?.length === 0">
+                <h4 mat-line>No Upcoming Events Found</h4>
+                <p mat-line>Try Another Place</p>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </section>
+  </mat-tab>
+</mat-tab-group>

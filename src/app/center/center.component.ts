@@ -123,4 +123,13 @@ export class CenterComponent implements OnInit, OnDestroy {
     if (!url.match(/^[a-zA-Z]+:\/\//)) { url = 'http://' + url; }
     window.open(url, '_blank');
   }
+
+  /**
+   * @TODO Open modal for information passed in.
+   * @param type Type of object.
+   * @param info Info of object.
+   */
+  public openModal(type: string, info: any): void {
+    console.log(info);
+  }
 }

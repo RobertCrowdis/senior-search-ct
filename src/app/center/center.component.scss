@@ -5,21 +5,18 @@ img.mat-list-icon {
 }
 
 mat-card-content.mat-card-content.full-width {
-  margin: 0px -24px -24px -24px !important;
-  @media (max-width: 600px) and (orientation: portrait) {
-    margin: 0px -16px -24px -16px !important;
-  }
-  agm-map {
-    height: 400px;
-  }
-}
-
-mat-card-content.mat-card-content.full-width-map {
   margin: 0px -24px !important;
+  &.bottom-too {
+    margin-bottom: -24px !important;
+  }
   @media (max-width: 600px) and (orientation: portrait) {
     margin: 0px -16px !important;
   }
+}
+
+div#map-tab {
+  height: 100%;
   agm-map {
-    height: 400px;
+    height: 100%;
   }
 }
