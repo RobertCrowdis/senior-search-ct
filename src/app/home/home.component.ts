@@ -64,6 +64,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Get function for information from Google Maps Places API about an agency.
+   * @returns Information from Google Maps Places API about an agency.
+   */
+  get about(): Observable<any> {
+    return this._cs.about;
+  }
+
+  /**
    * Get function for first 5 centers of a users query.
    * @returns Array of five centers.
    */
@@ -80,7 +88,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get functiom for all events near an agency.
+   * Get function for all events near an agency.
    * @returns Upcoming events.
    */
   get events(): Observable<any[]> {
@@ -110,6 +118,14 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   public encodeURI(uri: string): string {
     return encodeURI(uri);
+  }
+
+  /**
+   * Open new tab to url.
+   * @param url Url string.
+   */
+  public goTo(url: string): void {
+    window.open(url, '_blank');
   }
 
   /**

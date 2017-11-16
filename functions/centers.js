@@ -1,6 +1,9 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const httpRequest = require('request');
+const cors = require('cors')({
+  origin: true
+});
 
 /**
  * Fetches data from state of Connecticut, parses it, and adds it to the database.
@@ -65,11 +68,12 @@ exports.gmaps = functions.database.ref('/centers/{id}').onCreate((event) => {
     }
     try {
       body = JSON.parse(body);
-      if (body.error_message) { throw new Error(body.error_message); }
+      if (body.error_message) {
+        throw new Error(body.error_message);
+      }
       const results = body.results;
       if (Array.isArray(results) && results.length !== 0) {
         const result = results[0];
-        console.log(result)
         return centers.child(event.params.id).update({
           place_id: (result.place_id || null),
           rating: (result.rating || null),
@@ -80,6 +84,50 @@ exports.gmaps = functions.database.ref('/centers/{id}').onCreate((event) => {
       }
     } catch (e) {
       throw new Error(e);
+    }
+  });
+});
+
+
+/**
+ * Returns about information from Google Maps places API.
+ * @param {any} request - HTTP request data.
+ * @param {any} response - Function to send response to client.
+ */
+exports.about = functions.https.onRequest((request, response) => {
+  cors(request, response, () => {
+    if (request.query.placeid === undefined) {
+      response.status(400).send('No place id defined!');
+    } else {
+      const placeid = request.query.placeid;
+      httpRequest({
+        method: 'GET',
+        url: 'https://maps.googleapis.com/maps/api/place/details/json',
+        qs: {
+          key: functions.config().google.api,
+          placeid: placeid
+        },
+      }, (err, res, body) => {
+        if (err) {
+          throw new Error(err);
+        }
+        try {
+          body = JSON.parse(body);
+          if (body.error_message) {
+            throw new Error(body.error_message);
+          }
+          const result = body.result;
+          response.send(JSON.stringify({
+            result: {
+              reviews: result.reviews,
+              photos: result.photos,
+              website: result.website
+            }
+          }));
+        } catch (e) {
+          throw new Error(e);
+        }
+      });
     }
   });
 });

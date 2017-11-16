@@ -4,11 +4,15 @@ import { AngularFireDatabase } from 'angularfire2/database';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 import { LatLngLiteral } from 'geokit';
+
+import { environment } from '../../../environments/environment';
+
 /**
  * A class for the CentersService
  */
 @Injectable()
 export class CentersService {
+  private _about: BehaviorSubject<any> = new BehaviorSubject<any>({});
   private _active: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private _default: any = {
     agency: 'Senior Search CT',
@@ -17,7 +21,7 @@ export class CentersService {
       lng: -73.0877
     }
   };
-  private _events: BehaviorSubject<any[]> = new BehaviorSubject<any[]>(null);
+  private _events: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
   /**
     * @param _fbDB Firebase Database instance.
@@ -25,6 +29,10 @@ export class CentersService {
     */
   constructor(private _fbDB: AngularFireDatabase, private _http: HttpClient) {
     this._active.next(this._default);
+  }
+
+  get about(): Observable<any> {
+    return this._about.asObservable();
   }
 
   get active(): Observable<any> {
@@ -58,17 +66,33 @@ export class CentersService {
       if (changes.length === 0) { return this._active.next(this._default); }
       const place = { $key: changes[0].payload.key, ...changes[0].payload.val() };
       this._fetchEvents(place.coordinates);
+      (place.place_id) ? this._fetchAbout(place.place_id) : this._about.next({});
       this._active.next(place);
       return place;
     });
   }
 
+  /**
+   * Updates about information from Google Maps places API.
+   * @param placeid Google maps placeid.
+   */
+  private _fetchAbout(placeid: string): void {
+    const url = environment.api + 'about?placeid=' + placeid;
+    this._http.get(url).first().subscribe((response: any) => {
+      console.log(response.result)
+      this._about.next(response.result);
+    });
+  }
+
+  /**
+   * Updates events information near a location.
+   * @param coordinates LatLngLiteral of place to find events near.
+   */
   private _fetchEvents(coordinates: LatLngLiteral): void {
     const url = 'https://api.meetup.com/2/open_events?and_text=False&offset=0&format=json&limited_events=False' +
-      '&photo-host=public&page=20&radius=25.0&desc=False&status=upcoming&sig_id=177136722&sig=e416ba5c105b2aabf6723172c214629d863b0e93' +
+      '&photo-host=public&page=20&radius=5.0&desc=False&status=upcoming&sig_id=177136722&sig=e416ba5c105b2aabf6723172c214629d863b0e93' +
       '&topic=wellness,outdoors,parents,social&lat=' + coordinates.lat + '&lon=' + coordinates.lng;
     this._http.jsonp(url, 'callback').first().subscribe((response: any) => {
-      console.log(response.results);
       this._events.next(response.results);
     });
   }

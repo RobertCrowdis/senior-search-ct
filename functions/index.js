@@ -17,6 +17,8 @@ if (serviceAccount) {
 
 const centers = require('./centers').centers;
 const gmaps = require('./centers').gmaps;
+const about = require('./centers').about;
 
 exports.centers = centers;
 exports.gmaps = gmaps;
+exports.about = about;

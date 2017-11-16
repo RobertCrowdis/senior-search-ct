@@ -7,5 +7,6 @@ export const environment = {
     projectId: 'senior-search-ct',
     storageBucket: 'senior-search-ct.appspot.com',
     messagingSenderId: '374430659285'
-  }
+  },
+  api: 'https://us-central1-senior-search-ct.cloudfunctions.net/'
 };
