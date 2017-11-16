@@ -1,3 +1,9 @@
+img.mat-list-icon {
+  height: 48px !important;
+  width: 48px !important;
+  border-radius: 0% !important;
+}
+
 mat-card-content.mat-card-content.full-width {
   margin: 0px -24px -24px -24px !important;
   @media (max-width: 600px) and (orientation: portrait) {
@@ -16,10 +22,4 @@ mat-card-content.mat-card-content.full-width-map {
   agm-map {
     height: 400px;
   }
-}
-
-img.mat-list-icon {
-  height: 48px !important;
-  width: 48px !important;
-  border-radius: 0% !important;
 }

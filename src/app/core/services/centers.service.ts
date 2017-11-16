@@ -85,7 +85,6 @@ export class CentersService {
   private _fetchAbout(placeid: string): void {
     const url = environment.api + 'about?placeid=' + placeid;
     this._http.get(url).first().subscribe((response: any) => {
-      console.log(response.result)
       this._about.next(response.result);
     });
   }
@@ -112,7 +111,6 @@ export class CentersService {
       'ProductCode=101&APIKey=54654D75-3AEB-4C5A-80CC-53DA5F71EA18&CallerSystemName=SilverSneakersWebsite&' +
       'MileRadius=5&Latitude=' + coordinates.lat + '&Longitude=' + coordinates.lng;
     this._http.get(url).first().subscribe((response: any) => {
-      console.log(response.locations);
       this._sneakers.next(response.locations);
     });
   }
