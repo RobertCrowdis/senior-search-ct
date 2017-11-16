@@ -41,13 +41,13 @@
           [streetViewControl]="false" [usePanning]="true" [fullscreenControl]="false" [gestureHandling]="'greedy'">
           <agm-marker [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [iconUrl]="(facility | async)?.icon || null"></agm-marker>
         </agm-map>
-        <!-- {{about | async | json}} -->
       </mat-card-content>
       <mat-card-actions>
+        <a *ngIf="(about | async)?.website" [href]="(about | async)?.website" target="_blank" mat-button>WEBSITE</a>
         <a *ngIf="(facility | async)?.phone" [href]="'tel:'+(facility | async)?.phone" mat-button>CALL</a>
         <a *ngIf="(facility | async)?.email" [href]="'mailto:'+(facility | async)?.email" mat-button>EMAIL</a>
         <a [href]="'https://www.google.com/maps/dir/'+(coordsUser | async)?.lat+','+(coordsUser | async)?.lng+'/'+(facility | async)?.coordinates.lat+','+(facility | async)?.coordinates.lng"
-          target="_blank" mat-button>NAVIGATE TO</a>
+          target="_blank" mat-button>DIRECTIONS</a>
       </mat-card-actions>
     </mat-card>
   </div>
@@ -94,9 +94,10 @@
             <mat-list>
               <ng-template ngFor let-review [ngForOf]="(about | async)?.reviews" let-last="last">
                 <mat-list-item (click)="goTo(review.author_url)">
-                  <img mat-list-icon [src]="review.profile_photo_url" [alt]="review.author_name">
+                  <img mat-list-icon [src]="review.profile_photo_url || './assets/profile.jpg'" [alt]="review.author_name">
                   <h4 mat-line>{{review.author_name}}</h4>
-                  <p mat-line>{{review.rating}} | {{review.text}}</p>
+                  <p mat-line>{{review.rating}} stars
+                    <span *ngIf="review.text">|</span> {{review.text}}</p>
                 </mat-list-item>
                 <mat-divider *ngIf="!last"></mat-divider>
               </ng-template>
@@ -110,18 +111,6 @@
       </mat-card-content>
     </mat-card>
   </div>
-
-  <!-- Events -->
-  <!-- <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="33" class="mat-card-padding">
-    <mat-card>
-      <mat-card-header>
-        <mat-card-title>Nearby Events</mat-card-title>
-      </mat-card-header>
-      <mat-card-content class="full-width">
-       
-      </mat-card-content>
-    </mat-card>
-  </div> -->
 </section>
 
 <ng-template #aboutSection>
