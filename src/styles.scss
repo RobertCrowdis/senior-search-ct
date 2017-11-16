@@ -33,6 +33,8 @@ body {
 
   p {
     font-size: $fontsize;
+    color: $text !important;
+    line-height: 30px;
   }
 
   .slowfade {
