@@ -80,6 +80,14 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Get function for LatLngLiteral of user's location.
+   * @returns Observable of user's location as LatLngLiteral.
+   */
+  get coordsUser(): Observable<LatLngLiteral> {
+    return this._ls.coordinates;
+  }
+
+  /**
    * Flag to display list of centers.
    * @returns Flag to display list of centers.
    */
@@ -104,11 +112,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get function for LatLngLiteral of user's location.
-   * @returns Observable of user's location as LatLngLiteral.
+   * Get function for an silver sneakers.
+   * @returns Silver sneakers informtation.
    */
-  get coordsUser(): Observable<LatLngLiteral> {
-    return this._ls.coordinates;
+  get sneakers(): Observable<any[]> {
+    return this._cs.sneakers;
   }
 
   /**
@@ -125,6 +133,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * @param url Url string.
    */
   public goTo(url: string): void {
+    if (!url.match(/^[a-zA-Z]+:\/\//)) { url = 'https://' + url; }
     window.open(url, '_blank');
   }
 

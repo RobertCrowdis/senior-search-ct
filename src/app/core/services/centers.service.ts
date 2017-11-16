@@ -22,6 +22,7 @@ export class CentersService {
     }
   };
   private _events: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  private _sneakers: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
   /**
     * @param _fbDB Firebase Database instance.
@@ -41,6 +42,10 @@ export class CentersService {
 
   get events(): Observable<any[]> {
     return this._events.asObservable();
+  }
+
+  get sneakers(): Observable<any[]> {
+    return this._sneakers.asObservable();
   }
 
   /**
@@ -66,6 +71,7 @@ export class CentersService {
       if (changes.length === 0) { return this._active.next(this._default); }
       const place = { $key: changes[0].payload.key, ...changes[0].payload.val() };
       this._fetchEvents(place.coordinates);
+      this._fetchSneakers(place.coordinates);
       (place.place_id) ? this._fetchAbout(place.place_id) : this._about.next({});
       this._active.next(place);
       return place;
@@ -94,6 +100,20 @@ export class CentersService {
       '&topic=wellness,outdoors,parents,social&lat=' + coordinates.lat + '&lon=' + coordinates.lng;
     this._http.jsonp(url, 'callback').first().subscribe((response: any) => {
       this._events.next(response.results);
+    });
+  }
+
+  /**
+   * Updates sneakers information with silver sneakers facilities near a location.
+   * @param coordinates LatLngLiteral of place to find silver sneakers facilities near.
+   */
+  private _fetchSneakers(coordinates: LatLngLiteral): void {
+    const url = 'https://locationsearch.tivityhealth.com/api/GeneralLocationsClassesByGeoPoint?' +
+      'ProductCode=101&APIKey=54654D75-3AEB-4C5A-80CC-53DA5F71EA18&CallerSystemName=SilverSneakersWebsite&' +
+      'MileRadius=5&Latitude=' + coordinates.lat + '&Longitude=' + coordinates.lng;
+    this._http.get(url).first().subscribe((response: any) => {
+      console.log(response.locations);
+      this._sneakers.next(response.locations);
     });
   }
 }
