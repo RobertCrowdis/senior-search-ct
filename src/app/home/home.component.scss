@@ -1,0 +1,9 @@
+mat-card-content.mat-card-content.full-width {
+  margin: 0px -24px -24px -24px !important;
+  @media (max-width: 600px) and (orientation: portrait) {
+    margin: 0px -16px -24px -16px !important;
+  }
+  agm-map {
+    height: 400px;
+  }
+}

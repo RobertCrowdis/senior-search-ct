@@ -1,22 +1,43 @@
-import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser/';
-import { CoreModule } from './core/core.module';
+import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
+import { AgmCoreModule } from '@agm/core';
+import * as Hammer from 'hammerjs';
 
 import { environment } from '../environments/environment';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+export class HammerConfig extends HammerGestureConfig {
+  overrides = <any>{
+    'swipe': { direction: Hammer.DIRECTION_ALL }
+  };
+}
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent
+  ],
   imports: [
+    BrowserModule.withServerTransition({ appId: 'senior-search-ct' }),
+    BrowserAnimationsModule,
     AppRoutingModule,
-    BrowserModule,
+    AgmCoreModule.forRoot({
+      apiKey: environment.firebase.apiKey
+    }),
     CoreModule.forRoot(),
     SharedModule
   ],
-  bootstrap: [AppComponent]
+  providers: [{
+    provide: HAMMER_GESTURE_CONFIG,
+    useClass: HammerConfig
+  }],
+  bootstrap: [
+    AppComponent
+  ]
 })
 export class AppModule { }

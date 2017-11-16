@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <span>SeniorSearch CT</span>
+  <span>{{(active | async)?.agency}}</span>
 </mat-toolbar>
 
 <router-outlet></router-outlet>

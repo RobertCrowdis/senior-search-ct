@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import { CentersService } from './core/services';
 
 /**
  * A component for the AppComponent
@@ -9,5 +12,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
+  constructor(private _cs: CentersService) { }
+
+  get active(): Observable<any> {
+    return this._cs.active;
+  }
 }

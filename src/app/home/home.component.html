@@ -1,19 +1,89 @@
-<!-- <section fxLayout="row" fxLayoutAlign="center">
-    <div fxFlex="1/3">
-      <img class="full-size" src="./assets/home/pic1.jpg" alt="A couple running on the beach">
-    </div>
-    <div fxFlex="1/3">
-      <img class="full-size" src="./assets/home/pic2.jpg" alt="A couple ">
-    </div>
-    <div fxFlex="1/3">
-      <img class="full-size" src="./assets/home/pic3.jpg" alt="A couple ">
-    </div>
-  </section> -->
-
-<section>
+<section fxLayout="row" fxLayoutAlign="center">
+  <div fxFlex.xs="100" fxFlex.sm="80" fxFlex.lg="60" class="mat-card-padding">
     <mat-card>
-        <mat-card-header>
-            Senior Search CT
-        </mat-card-header>
+      <mat-card-header>
+        <mat-card-title>
+          Senior Search CT
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field>
+          <input matInput placeholder="Enter a town or senior center" (keyup)="search($event.target.value)" #searchBar>
+        </mat-form-field>
+        <mat-list *ngIf="display">
+          <h3 mat-subheader>Potential Centers</h3>
+          <ng-template ngFor let-center [ngForOf]="centers" let-last="last">
+            <mat-list-item [routerLink]="['/', encodeURI(center.agency)]">
+              <h4 mat-line>{{center.agency}}</h4>
+              <p mat-line>{{center.address.city}}, {{center.address.state}}</p>
+            </mat-list-item>
+            <mat-divider *ngIf="!last"></mat-divider>
+          </ng-template>
+          <mat-list-item *ngIf="centers.length === 0">
+            <h4 mat-line>No Facility Found</h4>
+            <p mat-line>Try Another Query</p>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
     </mat-card>
+  </div>
+</section>
+
+<section *ngIf="(facility | async)" fxLayout="row" fxLayoutAlign="center" fxLayoutWrap>
+  <!-- About -->
+  <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="33" class="mat-card-padding">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{(facility | async)?.agency}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p></p>
+      </mat-card-content>
+      <mat-card-actions>
+        <a *ngIf="(facility | async)?.phone" [href]="'tel:'+(facility | async)?.phone" mat-button>CALL</a>
+        <a *ngIf="(facility | async)?.email" [href]="'mailto:'+(facility | async)?.email" mat-button>EMAIL</a>
+        <a [href]="'https://www.google.com/maps/dir/'+(coordsUser | async)?.lat+','+(coordsUser | async)?.lng+'/'+(facility | async)?.coordinates.lat+','+(facility | async)?.coordinates.lng"
+          target="_blank" mat-button>NAVIGATE TO</a>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Map -->
+  <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="33" class="mat-card-padding">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>On The Map</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="full-width">
+        <agm-map [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng" [zoom]="17" [zoomControl]="false"
+          [streetViewControl]="false" [usePanning]="true" [fullscreenControl]="false" [gestureHandling]="'greedy'">
+          <agm-marker [latitude]="(facility | async)?.coordinates.lat" [longitude]="(facility | async)?.coordinates.lng"></agm-marker>
+        </agm-map>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Events -->
+  <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="33" class="mat-card-padding">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Upcoming Events</mat-card-title>
+      </mat-card-header>
+      <mat-card-content class="full-width">
+        <mat-list>
+          <ng-template ngFor let-event [ngForOf]="events | async" let-last="last">
+            <mat-list-item>
+              <h4 mat-line>{{event.name}}</h4>
+              <p mat-line>{{event.group.name}} | {{event.time | date}}</p>
+            </mat-list-item>
+            <mat-divider *ngIf="!last"></mat-divider>
+          </ng-template>
+          <mat-list-item *ngIf="(events | async)?.length === 0">
+            <h4 mat-line>No Upcoming Events Found</h4>
+            <p mat-line>Try Another Place</p>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </section>
