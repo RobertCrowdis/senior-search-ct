@@ -10,21 +10,43 @@ mat-form-field {
   }
 }
 
+app-center {
+  mat-tab-group {
+    mat-tab-header.mat-tab-header {
+      background-color: white;
+    }
+    div.mat-tab-body-wrapper {
+      mat-tab-body {
+        min-height: calc(100vh - 113px);
+        height: calc(100vh - 113px);
+        max-height: calc(100vh - 113px);
+        @media (max-width: 600px) and (orientation: portrait) {
+          min-height: calc(100vh - 105px);
+          height: calc(100vh - 105px);
+          max-height: calc(100vh - 105px);
+        }
+      }
+    }
+  }
 mat-card-title {
   font-size: 1.8rem !important;
 }
-
-mat-tab-header.mat-tab-header {
-  position: absolute !important;
-  top: 58px !important;
-  left: 0 !important;
-  z-index: 2 !important;
-  width: 100% !important;
-  background-color: white;
 }
 
-div.mat-tab-body-wrapper {
-  margin-top: 42px;
+mat-card-content{
+  mat-tab-group {
+    mat-tab-header.mat-tab-header {
+      position: absolute !important;
+      top: 58px !important;
+      left: 0 !important;
+      z-index: 2 !important;
+      width: 100% !important;
+      background-color: white;
+    }
+    div.mat-tab-body-wrapper {
+      margin-top: 42px;
+    }
+  }
 }
 
 mat-toolbar.mat-toolbar {

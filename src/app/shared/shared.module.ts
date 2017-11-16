@@ -8,6 +8,7 @@ import { AgmCoreModule } from '@agm/core';
 
 import { DistancePipe } from './pipes/distance.pipe';
 import { FixedPipe } from './pipes/fixed.pipe';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { FixedPipe } from './pipes/fixed.pipe';
   ],
   declarations: [
     DistancePipe,
-    FixedPipe
+    FixedPipe,
+    SearchComponent
   ],
   exports: [
     ...MATERIAL,
@@ -28,7 +30,8 @@ import { FixedPipe } from './pipes/fixed.pipe';
     ReactiveFormsModule,
     AgmCoreModule,
     DistancePipe,
-    FixedPipe
+    FixedPipe,
+    SearchComponent
   ]
 })
 export class SharedModule { }
