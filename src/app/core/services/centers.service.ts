@@ -32,18 +32,34 @@ export class CentersService {
     this._active.next(this._default);
   }
 
+  /**
+   * Getter for the information of a location.
+   * @returns About information selected.
+   */
   get about(): Observable<any> {
     return this._about.asObservable();
   }
 
+  /**
+   * Getter for the active location that is selected.
+   * @returns Active location selected.
+   */
   get active(): Observable<any> {
     return this._active.asObservable();
   }
 
+  /**
+   * Getter for nearby events for a location.
+   * @returns Events nearby.
+   */
   get events(): Observable<any[]> {
     return this._events.asObservable();
   }
 
+  /**
+   * Getter for nearby Silver Sneaker locations.
+   * @returns Silver Sneaker locations nearby.
+   */
   get sneakers(): Observable<any[]> {
     return this._sneakers.asObservable();
   }
