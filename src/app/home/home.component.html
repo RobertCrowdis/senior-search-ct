@@ -13,7 +13,7 @@
         <mat-list *ngIf="display">
           <h3 mat-subheader>Potential Centers</h3>
           <ng-template ngFor let-center [ngForOf]="centers" let-last="last">
-            <mat-list-item [routerLink]="['/', encodeURI(center.agency)]">
+            <mat-list-item [routerLink]="['/', encodeURI(center.agency)]" class="fastfade">
               <h4 mat-line>{{center.agency}}</h4>
               <p mat-line>{{center.address.city}}, {{center.address.state}}</p>
             </mat-list-item>
@@ -29,7 +29,7 @@
   </div>
 </section>
 
-<section *ngIf="(facility | async); else aboutSection" fxLayout="row" fxLayoutAlign="center" fxLayoutWrap>
+<section *ngIf="(facility | async); else aboutSection" fxLayout="row" fxLayoutAlign="center" fxLayoutWrap class="slowfade">
   <!-- Map -->
   <div fxFlex.xs="100" fxFlex.gt-xs="40" fxFlex.gt-md="30" class="mat-card-padding">
     <mat-card>
