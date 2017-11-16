@@ -29,7 +29,7 @@
   </div>
 </section>
 
-<section *ngIf="(facility | async)" fxLayout="row" fxLayoutAlign="center" fxLayoutWrap>
+<section *ngIf="(facility | async); else about" fxLayout="row" fxLayoutAlign="center" fxLayoutWrap>
   <!-- About -->
   <div fxFlex.xs="100" fxFlex.gt-xs="50" fxFlex.gt-md="33" class="mat-card-padding">
     <mat-card>
@@ -87,3 +87,7 @@
     </mat-card>
   </div>
 </section>
+
+<ng-template #about>
+  <app-about></app-about>
+</ng-template>
